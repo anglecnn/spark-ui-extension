@@ -2,7 +2,7 @@ package org.apache.spark.ui
 
 import java.util.concurrent.{ConcurrentHashMap, ConcurrentMap}
 
-import scala.xml.{Elem, Node}
+import scala.xml.Node
 
 import javax.servlet.http.HttpServletRequest
 import org.apache.spark.internal.Logging
@@ -17,11 +17,8 @@ class DataFrameSchemaUIPage(parent: ExtendedUIServer) extends WebUIPage("") with
   def render(request: HttpServletRequest): Seq[Node] = {
     import scala.collection.JavaConversions._
 
-    /*val sd: Elem = <br/>
-    val d = sd <br/>*/
-
-    val content = <h4>This Utility show to a test environment, where it display schema of
-      registered dataframes</h4>
+    val content = <h4>The below table shows registered dataframes on the left, with there schemas on the
+        right.</h4>
         <br/>
       <div>
         <table class="table table-bordered table-condensed" id="task-summary-table">
@@ -42,7 +39,9 @@ class DataFrameSchemaUIPage(parent: ExtendedUIServer) extends WebUIPage("") with
         </table>
       </div>
 
-    UIUtils.headerSparkPage("Read/Write Schema of Dataframes", content, parent)
+    UIUtils.headerSparkPage(
+      "This is the extension to Spark UI to display custom information about your application.",
+      content, parent)
   }
 }
 
@@ -51,7 +50,8 @@ object Utility {
 
   implicit class DataFrameSchema[T](df: Dataset[T]) {
     def registerSchema: Dataset[T] = {
-      schemas.put(df.toString(), df.schema.treeString)
+        schemas.put(Thread.currentThread().getStackTrace.slice(2,4).mkString("\n"), df.schema
+          .treeString)
       df
     }
   }

@@ -1,3 +1,4 @@
 target/
 .idea/
 spark-ui-extension.iml
+spark-warehouse/
